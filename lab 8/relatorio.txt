@@ -2,7 +2,13 @@
 Felipe Nunes 3WA 2320615
 
 
-1) Para a implementação da função main, foi necessário mover o endereço da string de comando para o registrador rdi. Conforme a convenção de chamada de 64 bits, rdi é utilizado para passar o primeiro argumento de uma função, que neste caso é um ponteiro. Em seguida, a função system da biblioteca padrão C (stdlib) foi invocada através da instrução call. A execução resultou na exibição dos nomes de arquivos do diretório corrente no terminal.
+1) Para a implementação da função main, foi necessário mover o endereço da string de comando para o registrador rdi.
+Conforme a convenção de chamada de 64 bits, rdi é utilizado para passar o primeiro argumento de uma função, que neste 
+caso é um ponteiro. Em seguida, a função system da biblioteca padrão C (stdlib) foi invocada através da instrução call. 
+A execução resultou na exibição dos nomes de arquivos do diretório corrente no terminal.
 
-2) A construção da função main consistiu em preparar e executar uma chamada de sistema. Primeiramente, o ponteiro para a string de comando foi carregado no registrador de 64 bits rdi, que, por convenção, armazena o primeiro parâmetro de uma função. Logo após, foi realizada uma chamada (call) à função system, parte da biblioteca stdlib. Como resultado, o sistema operacional executou o comando, listando no terminal o conteúdo do diretório atual.
+2) A construção da função main consistiu em preparar e executar uma chamada de sistema. Primeiramente, o ponteiro para a string 
+de comando foi carregado no registrador de 64 bits rdi, que, por convenção, armazena o primeiro parâmetro de uma função. 
+Logo após, foi realizada uma chamada (call) à função system, parte da biblioteca stdlib. Como resultado, o sistema operacional 
+executou o comando, listando no terminal o conteúdo do diretório atual.
 
