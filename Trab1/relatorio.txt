@@ -1,33 +1,24 @@
-Aluno: Felipe Eduardo Nunes da Silva
-Matrícula: 2320615
-Turma: 33WA
+Felipe Eduardo Nunes da Silva - 2320615 -Turma A
+Pedro Augusto Beserra da Silva - 2321374 - Turma B 
 
 
-Todas as 8 funções obrigatórias da biblioteca BigInt foram implementadas e estão funcionando corretamente.
+O que foi feito
+    - Implementamos as 8 funções da biblioteca BigInt, cobrindo todas as operações de atribuição, aritmética e deslocamento de bits que foram pedidas.
+    - Para cada função criada, desenvolvemos uma bateria de testes automatizados para garantir que tudo estava funcionando corretamente.
 
-A suíte de testes automatizados, contida em "testebigint.c", foi executada com sucesso, com todos os 24 asserts passando, confirmando a corretude das implementações para os casos de teste propostos. Não há funcionalidades com defeito.
+Testes
+    Testamos cada função com valores positivos, negativos e zero, comparando o resultado real com o esperado para validar a operação.
 
------------------------------------------
-Estratégia e Organização dos Testes
--------------------------------------
+Framework usado
+    -CUnit para criar e rodar os testes de forma automática.
 
-A estratégia de teste adotada foi a de Test-Driven Design (TDD), onde os testes foram concebidos para validar os requisitos antes mesmo da implementação completa das funções. Para a automação, foi utilizada a biblioteca CUnit.
+Como baixar
+    sudo apt update
+    sudo apt-get install libcunit1 libcunit1-doc libcunit1-dev
 
-A organização do roteiro de testes foi feita da seguinte forma:
-
-1.  **Suíte de Testes Única:** Foi criada uma suíte de testes principal, chamada "BigInt_Suite_Completa", para agrupar todos os testes relacionados à biblioteca.
-
-2.  **Uma Função de Teste por Função da Biblioteca:** Para cada função em "bigint.c" (ex: big_sum), foi criada uma função de teste correspondente em "testebigint.c" (ex: testa_big_sum). Isso garante a modularidade e a clareza sobre qual parte do código está sendo validada.
-
-3.  **Cobertura de Casos:** Para cada função, foram criados testes que cobrem os casos de uso essenciais e alguns casos de borda, incluindo:
-    * Operações com números positivos.
-    * Operações com números negativos.
-    * Operações envolvendo o valor zero.
-    * Resultados que transitam entre positivo e negativo (ex: 50 - 200 = -150).
-    * Casos que testam a propagação de "vai-um" (carry) ou "empresta-um" (borrow) na aritmética e nos deslocamentos.
-
-Essa abordagem assegura que cada componente da biblioteca foi verificado de forma isolada e robusta antes de ser considerado finalizado.
-
-Como compila: 
-    gcc -o testebigint testebigint.c  bigint.c -lcunit
+Como compilar e rodar o projeto
+    gcc -Wall -o testebigint testebigint.c bigint.c -lcunit
     ./testebigint
+
+Resultado dos testes
+    - 100% de sucesso.
