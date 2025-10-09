@@ -1,0 +1,33 @@
+Aluno: Felipe Eduardo Nunes da Silva
+Matrícula: 2320615
+Turma: 33WA
+
+
+Todas as 8 funções obrigatórias da biblioteca BigInt foram implementadas e estão funcionando corretamente.
+
+A suíte de testes automatizados, contida em "testebigint.c", foi executada com sucesso, com todos os 24 asserts passando, confirmando a corretude das implementações para os casos de teste propostos. Não há funcionalidades com defeito.
+
+-----------------------------------------
+Estratégia e Organização dos Testes
+-------------------------------------
+
+A estratégia de teste adotada foi a de Test-Driven Design (TDD), onde os testes foram concebidos para validar os requisitos antes mesmo da implementação completa das funções. Para a automação, foi utilizada a biblioteca CUnit.
+
+A organização do roteiro de testes foi feita da seguinte forma:
+
+1.  **Suíte de Testes Única:** Foi criada uma suíte de testes principal, chamada "BigInt_Suite_Completa", para agrupar todos os testes relacionados à biblioteca.
+
+2.  **Uma Função de Teste por Função da Biblioteca:** Para cada função em "bigint.c" (ex: big_sum), foi criada uma função de teste correspondente em "testebigint.c" (ex: testa_big_sum). Isso garante a modularidade e a clareza sobre qual parte do código está sendo validada.
+
+3.  **Cobertura de Casos:** Para cada função, foram criados testes que cobrem os casos de uso essenciais e alguns casos de borda, incluindo:
+    * Operações com números positivos.
+    * Operações com números negativos.
+    * Operações envolvendo o valor zero.
+    * Resultados que transitam entre positivo e negativo (ex: 50 - 200 = -150).
+    * Casos que testam a propagação de "vai-um" (carry) ou "empresta-um" (borrow) na aritmética e nos deslocamentos.
+
+Essa abordagem assegura que cada componente da biblioteca foi verificado de forma isolada e robusta antes de ser considerado finalizado.
+
+Como compila: 
+    gcc -o testebigint testebigint.c  bigint.c -lcunit
+    ./testebigint

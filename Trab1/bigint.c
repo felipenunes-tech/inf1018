@@ -1,185 +1,164 @@
 /* Felipe Eduardo Nunes da Silva : 2320615 : 33WA */
 
+#include "bigint.h"
 #include <stdio.h>
 #include <string.h>
-// #include "testebigint.c"
 
 #define NUM_BITS 128
+#define NUM_BYTES (NUM_BITS / 8)
 typedef unsigned char BigInt[NUM_BITS/8];
 
-void big_val (BigInt res, long val){
-    memset(res, 0, sizeof(BigInt)); // inicializa o BigInt com zeros
-    unsigned indice = 0; 
-    unsigned qt_bytes = NUM_BITS / 8;
+/* Atribuicao */
 
-    while(val && indice < qt_bytes){
-       unsigned ultimoByte = val & 0xff;
-       res[indice] = ultimoByte;
-       val = val>>8;
-       indice++;
+/* res = val (extensao com sinal) */
+void big_val (BigInt res, long val) {
+    // Realiza a extensao de sinal preenchendo todo o BigInt com o bit mais significativo de 'val'.
+    unsigned char preenchimento = (val < 0) ? 0xFF : 0x00;
+    memset(res, preenchimento, NUM_BYTES);
 
-    }
-
-}
-
-void big_comp2(BigInt res, BigInt a){
-    unsigned indice = 0;
-    unsigned qt_bytes = NUM_BITS / 8;
-
-    while(indice < qt_bytes){
-         res[indice] = ~a[indice];
-         indice++;
-    }
-    // adicionar 1 e caso ocorra overflow, propagar o um pelo vetor
-    unsigned um = 1;
-    indice = 0;
-
-    while (indice < qt_bytes && um) {
-        // salvo em uma variavel maior que char para evitar overflow
-        unsigned soma = res[indice] + um;
-        //pego o byte menos significativo, e atribuo ao res
-        res[indice] = soma & 0xff;
-        // o proximo um é o byte mais significativo que restou da soma
-        um = soma >> 8;
-        indice++;
-
+    // Copia os bytes de 'val' para a parte menos significativa do BigInt.
+    unsigned char* bytes_do_valor = (unsigned char*)&val;
+    for (unsigned i = 0; i < sizeof(long); i++) {
+        res[i] = bytes_do_valor[i];
     }
 }
 
-void big_sum(BigInt res, BigInt a, BigInt b){
-    unsigned qt_bytes = NUM_BITS / 8;
-    unsigned um = 0;
-    unsigned indice = 0;
+/* Operacoes aritmeticas */
 
-    while(indice < qt_bytes){
-        unsigned soma = a[indice] + b[indice] + um;
-        res[indice] = soma & 0xff;
-        um = soma >> 8;
-        indice++;
+/* res = -a */
+void big_comp2(BigInt res, BigInt a) {
+    // Implementa o complemento de dois com a logica (~a + 1) em duas passadas.
+    for (unsigned i = 0; i < NUM_BYTES; i++) {
+        res[i] = ~a[i];
+    }
+
+    unsigned int vai_um = 1;
+    for (unsigned i = 0; i < NUM_BYTES && vai_um > 0; i++) {
+        unsigned int soma_parcial = res[i] + vai_um;
+        res[i] = (unsigned char)soma_parcial;
+        vai_um = soma_parcial >> 8;
     }
 }
 
-void big_sub(BigInt res, BigInt a, BigInt b){
-    memset(res, 0, sizeof(BigInt));
-    BigInt compa2_b;
-    big_comp2(compa2_b, b);
-    big_sum(res, a, compa2_b);
+/* res = a + b */
+void big_sum (BigInt res, BigInt a, BigInt b) {
+    unsigned int transporte = 0;
+    unsigned int i = 0;
+
+    while (i < NUM_BYTES) {
+        unsigned int soma_bytes = (unsigned int)a[i] + b[i] + transporte;
+        res[i] = soma_bytes & 0xFF;
+        transporte = soma_bytes >> 8;
+        i++;
+    }
 }
 
-void big_mul(BigInt res, BigInt a, BigInt b){
-    BigInt temp;
-    memset(res, 0, sizeof(BigInt));
-    unsigned num_bytes = NUM_BITS / 8;
+/* res = a - b */
+void big_sub (BigInt res, BigInt a, BigInt b) {
+    // Subtracao implementada como a soma do complemento de dois: a + (-b).
+    BigInt b_negativo;
+    big_comp2(b_negativo, b);
+    big_sum(res, a, b_negativo);
+}
 
-    // Para cada bit do multiplicador b
-    for (unsigned pos_bit = 0; pos_bit < NUM_BITS; pos_bit++) {
-        unsigned indice_byte_b = pos_bit / 8;
-        unsigned indice_bit_b = pos_bit % 8;
-        unsigned mascara_bit_b = 1 << indice_bit_b;
-
-        // Se o bit correspondente de b está ligado
-        if (b[indice_byte_b] & mascara_bit_b) {
-            memset(temp, 0, sizeof(BigInt));
-            unsigned desloca_byte = pos_bit / 8;
-            unsigned desloca_bit = pos_bit % 8;
-
-            // Para cada byte do multiplicando a
-            for (unsigned indice_byte_a = 0; indice_byte_a < num_bytes; indice_byte_a++) {
-                unsigned valor_a = a[indice_byte_a];
-                if (valor_a == 0) continue;
-
-                // Desloca o byte de a para a esquerda
-                unsigned deslocado = valor_a << desloca_bit;
-                unsigned sobra = 0;
-                // Se houver deslocamento de bits, pega o "resto" do próximo byte
-                if (desloca_bit && indice_byte_a < num_bytes - 1)
-                    sobra = a[indice_byte_a + 1] >> (8 - desloca_bit);
-
-                unsigned indice_temp = indice_byte_a + desloca_byte;
-                if (indice_temp < num_bytes)
-                    temp[indice_temp] |= deslocado & 0xFF;
-                if (desloca_bit && indice_temp + 1 < num_bytes)
-                    temp[indice_temp + 1] |= sobra & 0xFF;
+/* res = a * b */
+void big_mul (BigInt res, BigInt a, BigInt b) {
+    // Algoritmo de multiplicacao longa (base 256).
+    memset(res, 0, NUM_BYTES);
+    
+    for (unsigned idx_b = 0; idx_b < NUM_BYTES; idx_b++) {
+        unsigned int excedente = 0;
+        for (unsigned idx_a = 0; idx_a < NUM_BYTES; idx_a++) {
+            unsigned int pos_res = idx_a + idx_b;
+            
+            if (pos_res < NUM_BYTES) {
+                unsigned int produto_parcial = (unsigned int)b[idx_b] * a[idx_a] + res[pos_res] + excedente;
+                res[pos_res] = (unsigned char)produto_parcial;
+                excedente = produto_parcial >> 8;
             }
-            // Soma o valor temporário ao resultado acumulado
-            big_sum(res, res, temp);
         }
     }
 }
+
+/* Operacoes de deslocamento */
 
 /* res = a << n */
-void big_shl(BigInt res, BigInt a, int n){
-    memset(res, 0, sizeof(BigInt));
-    unsigned num_bytes = NUM_BITS / 8;
-
-    if (n >= NUM_BITS) return; // se n é maior ou igual ao número de bits, o resultado é zero
-
-    unsigned desloca_bytes = n / 8;
-    unsigned desloca_bits = n % 8;
-
-    for (unsigned i = 0; i < num_bytes; i++) {
-        if (i + desloca_bytes < num_bytes) {
-            res[i + desloca_bytes] |= (a[i] << desloca_bits) & 0xFF;
-        }
-        if (desloca_bits != 0 && i + desloca_bytes + 1 < num_bytes) {
-            res[i + desloca_bytes + 1] |= (a[i] >> (8 - desloca_bits)) & 0xFF;
-        }
-    }
-
-}
-
-/* res = a >> n (lógico)*/
-void big_shr(BigInt res, BigInt a, int n){
-    memset(res, 0, sizeof(BigInt));
-    unsigned num_bytes = NUM_BITS / 8;
-
-    if (n >= NUM_BITS) return; // se n é maior ou igual ao número de bits, o resultado é zero
-
-    unsigned desloca_bytes = n / 8;
-    unsigned desloca_bits = n % 8;
-
-    for (unsigned i = 0; i < num_bytes; i++) {
-        if (i >= desloca_bytes) {
-            res[i - desloca_bytes] |= (a[i] >> desloca_bits) & 0xFF;
-        }
-        if (desloca_bits != 0 && i >= desloca_bytes + 1) {
-            res[i - desloca_bytes - 1] |= (a[i] << (8 - desloca_bits)) & 0xFF;
-        }
-    }
-}
-
-/* res = a >> n (aritmético)*/
-void big_sar(BigInt res, BigInt a, int n){
-    memset(res, 0, sizeof(BigInt));
-    unsigned num_bytes = NUM_BITS / 8;
-
+void big_shl (BigInt res, BigInt a, int n) {
     if (n >= NUM_BITS) {
-        // Se n é maior ou igual ao número de bits, o resultado depende do bit de sinal
-        if (a[num_bytes - 1] & 0x80) { // se o bit de sinal é 1 (número negativo)
-            memset(res, 0xFF, sizeof(BigInt)); // preenche com 1s
-        }
+        memset(res, 0, NUM_BYTES);
         return;
     }
 
-    unsigned desloca_bytes = n / 8;
-    unsigned desloca_bits = n % 8;
+    const unsigned desloc_bytes = n / 8;
+    const unsigned desloc_bits = n % 8;
 
-    for (unsigned i = 0; i < num_bytes; i++) {
-        if (i >= desloca_bytes) {
-            res[i - desloca_bytes] |= (a[i] >> desloca_bits) & 0xFF;
+    // Loop invertido para evitar sobrescrever bytes de 'a' que ainda serao lidos.
+    for (int i = NUM_BYTES - 1; i >= 0; --i) {
+        unsigned char parte_principal = 0;
+        if (i >= desloc_bytes) {
+            parte_principal = a[i - desloc_bytes] << desloc_bits;
         }
-        if (desloca_bits != 0 && i >= desloca_bytes + 1) {
-            res[i - desloca_bytes - 1] |= (a[i] << (8 - desloca_bits)) & 0xFF;
+
+        unsigned char parte_transportada = 0;
+        if (desloc_bits > 0 && i > desloc_bytes) {
+            parte_transportada = a[i - desloc_bytes - 1] >> (8 - desloc_bits);
         }
+        
+        res[i] = parte_principal | parte_transportada;
+    }
+}
+
+/* res = a >> n (logico) */
+void big_shr (BigInt res, BigInt a, int n) {
+    if (n >= NUM_BITS) {
+        memset(res, 0, NUM_BYTES);
+        return;
+    }
+    
+    const unsigned desloc_bytes = n / 8;
+    const unsigned desloc_bits = n % 8;
+
+    for (unsigned i = 0; i < NUM_BYTES; i++) {
+        unsigned char v1 = 0, v2 = 0;
+
+        if (i + desloc_bytes < NUM_BYTES) {
+            v1 = a[i + desloc_bytes] >> desloc_bits;
+        }
+
+        if (desloc_bits > 0 && i + desloc_bytes + 1 < NUM_BYTES) {
+            v2 = a[i + desloc_bytes + 1] << (8 - desloc_bits);
+        }
+
+        res[i] = v1 | v2;
+    }
+}
+
+/* res = a >> n (aritmetico) */
+void big_sar(BigInt res, BigInt a, int n) {
+    const unsigned char bit_de_sinal = a[NUM_BYTES - 1] & 0x80;
+    
+    if (n >= NUM_BITS) {
+        memset(res, bit_de_sinal ? 0xFF : 0, NUM_BYTES);
+        return;
     }
 
-    // Se o número é negativo, preenche os bits mais significativos com 1s
-    if (a[num_bytes - 1] & 0x80) {
-        for (unsigned i = num_bytes - 1; i >= num_bytes - desloca_bytes; i--) {
-            res[i] = 0xFF;
+    // 1. Realiza um deslocamento logico (preenchendo com zeros).
+    const unsigned desloc_bytes = n / 8;
+    const unsigned desloc_bits = n % 8;
+    for (int i = 0; i < NUM_BYTES; i++) {
+        unsigned char parte_principal = (i + desloc_bytes < NUM_BYTES) ? (a[i + desloc_bytes] >> desloc_bits) : 0;
+        unsigned char parte_transportada = (desloc_bits > 0 && i + desloc_bytes + 1 < NUM_BYTES) ? (a[i + desloc_bytes + 1] << (8 - desloc_bits)) : 0;
+        res[i] = parte_principal | parte_transportada;
+    }
+    
+    // 2. Se o numero era negativo, propaga o bit de sinal.
+    if (bit_de_sinal) {
+        unsigned char mascara = (unsigned char)0xFF << (8 - desloc_bits);
+        if (desloc_bits > 0 && NUM_BYTES > desloc_bytes) {
+            res[NUM_BYTES - desloc_bytes - 1] |= mascara;
         }
-        if (desloca_bits != 0 && num_bytes > desloca_bytes) {
-            res[num_bytes - desloca_bytes - 1] |= ((1 << desloca_bits) - 1) << (8 - desloca_bits);
+        for (unsigned i = NUM_BYTES - desloc_bytes; i < NUM_BYTES; i++) {
+            res[i] = 0xFF;
         }
     }
 }
