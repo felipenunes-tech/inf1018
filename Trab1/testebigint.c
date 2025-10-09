@@ -1,4 +1,5 @@
-
+/*Felipe Eduardo Nunes da Silva - 2320615 -Turma A
+Pedro Augusto Beserra da Silva - 2321374 - Turma B */
 
 #include "bigint.h"
 #include <stdio.h>
