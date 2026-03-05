@@ -1,0 +1,2 @@
+Os dados são armazenados na memória ultilizando a fnção dump para vizualizar os endereços e valores em exadecimal.
+Aprendi que a função sring2num convere os caraceres em números e observei que a função aceia ouras bases numericas, entendendo como letras podem representar valores em bases maiores que 10.
