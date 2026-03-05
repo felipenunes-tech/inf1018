@@ -5,9 +5,7 @@ int odd_ones(unsigned int x) {
     /* escreva seu código aqui */
     int cont = 0;
     while(x>0){
-      if(x & 1){
-        cont++;
-      }
+      cont += (x&1);
       x >>=1;
     }
     return cont & 1;
