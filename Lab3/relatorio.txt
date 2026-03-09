@@ -2,3 +2,20 @@ EX1:
  Usei os operadores de bytes & (AND) onde 0 comparado com qualquer coisa tende a ser 0, e o 1 só é 1 quando comparado com ele mesmo.
 O operador | (OR) onde qualquer coisa com 1 tende a ser 1, e segue a mesma lógica anterior.
 
+EX2:
+Para verificar a paridade dos bits, eu fiz o seguinte na função odd_ones:
+Iniciei um loop while (x > 0) para percorrer o número enquanto ainda houvesse bits '1' ativos nele.
+Usei cont += (x & 1) para isolar o bit mais à direita usando o operador AND (&) e somá-lo ao contador,
+já que o 1 comparado com qualquer coisa só retorna 1 se o outro bit também for 1.
+Apliquei o deslocamento x >>= 1 para empurrar todos os bits para a direita e já salvar essa alteração
+na variável, trazendo o próximo bit para a ponta e evitando um loop infinito.
+No retorno, usei cont & 1 para extrair apenas o último bit do valor total do contador, 
+o que resolve a paridade me dizendo diretamente se o total de bits '1' acumulado é ímpar (1) ou par (0).
+
+EX3:
+a)Nesta função para inverter as metades (nibbles) do byte.
+Usei o deslocamento x << 4 para empurrar os 4 bits da direita para a esquerda, guardando em temp.
+Depois, usei x >> 4 para empurrar os 4 bits da esquerda para a direita, guardando em temp2.
+Por fim, juntei as duas variáveis usando o operador | (OR) com temp | temp2, pois ele preserva e
+une os bits '1' de ambas as partes.
+Assim, o valor foi invertido perfeitamente, transformando o hexadecimal o exemplo 0xAB em 0xBA
