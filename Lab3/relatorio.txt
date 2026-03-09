@@ -1,0 +1,4 @@
+EX1:
+ Usei os operadores de bytes & (AND) onde 0 comparado com qualquer coisa tende a ser 0, e o 1 só é 1 quando comparado com ele mesmo.
+O operador | (OR) onde qualquer coisa com 1 tende a ser 1, e segue a mesma lógica anterior.
+
