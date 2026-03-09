@@ -19,3 +19,12 @@ Depois, usei x >> 4 para empurrar os 4 bits da esquerda para a direita, guardand
 Por fim, juntei as duas variáveis usando o operador | (OR) com temp | temp2, pois ele preserva e
 une os bits '1' de ambas as partes.
 Assim, o valor foi invertido perfeitamente, transformando o hexadecimal o exemplo 0xAB em 0xBA
+
+b)
+Na função rotate_left, eu fiz o seguinte para rotacionar os bits de um byte:
+Usei temp = x << n para deslocar o número para a esquerda, o que faz os n bits mais significativos
+"caírem" e sumirem.Para recuperar esses bits perdidos, usei temp2 = x >> (8 - n), 
+o que empurra exatamente esses mesmos bits lá para a ponta direita do byte.
+Por fim, usei o operador | (OR) fazendo temp | temp2 para unir as duas metades, já que ele preserva 
+todos os bits '1'.Assim, os bits que saíram pela esquerda deram a volta e entraram pela direita, 
+completando a rotação perfeitamente.
