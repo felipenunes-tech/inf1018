@@ -10,5 +10,5 @@ int main(void) {
      e os outros bytes com o mesmo valor dos bytes de x */
   z = x | 0xFF000000;
 
-  printf("y = %08x \n z= %08x\n", y, z);
+  printf("y = %08X \n z= %08X\n", y, z);
 }
