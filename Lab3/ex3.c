@@ -19,13 +19,16 @@ unsigned char rotate_left(unsigned char x, int n){
 }
 
 int main(void){
-
+//A)
     // 0xAB
     // 1010  1011
     // 0xBA
     printf("%X vira %X\n",0xAB,switch_byte(0xAB));
+//B)
+    printf("%X deslocando %d bits vira %X\n",0x61,1,rotate_left(0x61,1));
+    printf("%X deslocando %d bits vira %X\n",0x61,2,rotate_left(0x61,2));
+    printf("%X deslocando %d bits vira %X\n",0x61,7,rotate_left(0x61,7));
 
-    printf("%X vira %X\n",0x61,rotate_left(0x61,2));
 
     return 0;
 
