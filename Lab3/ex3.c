@@ -12,9 +12,11 @@ unsigned char switch_byte(unsigned char x){
 //B
 unsigned char rotate_left(unsigned char x, int n){
     unsigned char temp,temp2;
-    temp = x<<n;
-    temp2 = x>>(8-n);
-    x = (temp | temp2);
+    // 0x61 =0000 000 0110 0001
+    //N  = 1
+    temp = x<<n; // 1100 0010
+    temp2 = x>>(8-n); // 0000 000
+    x = (temp | temp2); // 
     return x;
 }
 
