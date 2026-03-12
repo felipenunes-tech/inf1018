@@ -1,0 +1,22 @@
+Dump:
+void *p, int n: A função recebe um ponteiro genérico (void *), o que significa que pode passar 
+qualquer tipo de variável para ela. 
+O parâmetro n define quantos bytes você quer ler a partir dali.
+
+unsigned char *p1 = p: Ela converte o endereço para unsigned char. Isso garante que cada incremento (p1++) 
+pule exatamente 1 byte na memória j[a que o char possui 1 byte].
+
+O Loop while (n--): O código vai repetir o processo n vezes.
+
+printf("%p - %02x\n", p1, *p1): %p: Imprime o endereço de memória atual.
+%02x: Imprime o conteúdo daquele byte em hexadecimal com dois dígitos.
+p1++: Move o ponteiro para o próximo endereço de memória (próximo byte).
+
+EX1:
+OBS:
+Cada valor hex ocupa 4 bits;
+Passo a passo;
+* Confiro o tamanho do byte;
+* Tranformo o número em hex;
+* Imprimo de 2 em 2 do bit menos significativo até o mais significativo;
+* Completo o número com os bits restantes se tiver.
