@@ -24,3 +24,15 @@ Passo a passo;
 EX2;
 Os número ficam igual pois tem a mesma sequencia de bits;
 
+EX4;
+O programa extrai um byte específico de uma palavra de 32 bits (packed_t) 
+e realiza a extensão de sinal. A função string2num converte 
+manualmente uma string hexadecimal para um inteiro,
+validando caracteres alfanuméricos conforme a base. 
+A função xbyte realiza o deslocamento à direita baseado no índice do byte 
+e utiliza um cast para char, o que força o bit de sinal a preencher as
+posições mais significativas quando o resultado é promovido a int. 
+No main, o programa recebe via linha de comando o valor hexadecimal e
+a posição desejada, exibindo o resultado final tanto em formato hexadecimal 
+quanto decimal.
+
