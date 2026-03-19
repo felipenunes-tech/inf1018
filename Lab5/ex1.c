@@ -7,7 +7,6 @@ void dump (void *p, int n) {
     p1++;
   }
 }
-
 int main (void) {
   int i,j;
   short a[2][3];
