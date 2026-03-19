@@ -36,3 +36,10 @@ No main, o programa recebe via linha de comando o valor hexadecimal e
 a posição desejada, exibindo o resultado final tanto em formato hexadecimal 
 quanto decimal.
 
+Ex5;
+signed char sc = -1; // 1111 1111
+unsigned int ui = sc; // 11111111 11111111 11111111 11111111
+
+Como em signed o bit mais a esquerda representa o sinal e para calcular n<0 usamos
+complemento a 2, sc continuará sendo -1.
+Quando se trata de unsigned, o caso já é diferente ele trata ese sc como 11111111 11111111 11111111 11111111 fosse um numero real.
