@@ -22,4 +22,6 @@ Os bytes são armazenados nos endereços multimos de seu respectivo  tamanho (si
 quando o endereço não é um multiplo adiocionamos os padding até o próximo múltiplo.
 
 Ex3:
-
+O vetor tem que seguir a regra de começar no maior tamanho, regra de alinhamento de memmória.
+O compilador se certifica que a struct possa começar no meior multiplo da struct, 
+então ele completa com os padding até o final para que isso ocorra.
