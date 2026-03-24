@@ -16,4 +16,5 @@ struct X {
 
 int main(){
   dump(&x,sizeof(x));
+  printf("\n%zu\n", sizeof(x));
 }
